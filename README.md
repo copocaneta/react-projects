@@ -1,4 +1,4 @@
-# Thiago Bernardi's React JS Repository
+# Thiago Bernardi's React JS ⚛️ Repository
 
 - This is my React JS repository.
 
