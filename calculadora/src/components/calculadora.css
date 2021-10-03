@@ -1,0 +1,112 @@
+body {
+  font-family: 'Ultra', serif;
+}
+#calculator {
+  height: 100vh;
+  width: 100vw;
+}
+#divDisplay {
+  width: 98%;
+  height: 158px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px black solid;
+}
+#display {
+  /*   font-size: 60px; */
+  font-size: calc(16px + 6 * ((100vw - 320px) / 680));
+}
+.calculadoraToda {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 375px;
+  margin: auto;
+  align-items: center;
+  align-content: center;
+  height: 100%;
+}
+
+.botoesCalculadora {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.numbers {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 85%;
+  flex-wrap: wrap-reverse;
+  align-items: self-end;
+  align-content: baseline;
+}
+
+.numberButtons {
+  width: 33%;
+  height: 80px;
+}
+.numbers :nth-child(1) {
+  order: 1;
+}
+.numbers :nth-child(2) {
+  order: 3;
+}
+.numbers :nth-child(3) {
+  order: 4;
+}
+.numbers :nth-child(4) {
+  order: 5;
+}
+.numbers :nth-child(5) {
+  order: 6;
+}
+.numbers :nth-child(6) {
+  order: 7;
+}
+.numbers :nth-child(7) {
+  order: 8;
+}
+.numbers :nth-child(8) {
+  order: 9;
+}
+.numbers :nth-child(9) {
+  order: 10;
+}
+.numbers :nth-child(10) {
+  order: 11;
+}
+.numbers :nth-child(11) {
+  order: 2;
+}
+.numbers :nth-child(12) {
+  order: 12;
+}
+
+.numberZero {
+  width: 66%;
+  height: 80px;
+}
+
+.operators {
+  display: flex;
+  flex-direction: column-reverse;
+  width: 15%;
+}
+
+.operators button {
+  height: 80px;
+  width: 100%;
+}
+
+.operatorButtons {
+  background-color: orange;
+  font-size: 18px;
+}
+
+.pressedButton {
+  border: 2px solid rgb(0, 0, 0);
+  box-shadow: 0 0 6px 0 rgb(0 0 0);
+}
