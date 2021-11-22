@@ -44,9 +44,9 @@ const NavStyles = styled.nav`
       color: var(--red);
 
     }
-    &[aria-current="page"]{
+    /* &[aria-current="page"]{
       color:var(--red);
-    }
+    } */
   }
 `
 
