@@ -4,20 +4,34 @@ import PropTypes from 'prop-types';
 import PizzaList from '../components/PizzaList';
 import ToppingsFilter from '../components/ToppingsFilter';
 
-export default function PizzasPage({data}) {
+export default function PizzasPage({data, pageContext}) {
   // console.log(data.pizzas);
   const pizzas = data.pizzas.nodes;
   return (
     <>
-      <ToppingsFilter/>
+      <ToppingsFilter activeTopping={pageContext.topping}/>
       <PizzaList pizzas={pizzas}/>
     </>
   );
 }
 
 export const query = graphql`
-  query PizzaQuery {
-    pizzas: allSanityPizza {
+  # Query for topping with 'in'
+  # query PizzaQuery($topping: [String]) {
+  # Query for topping with regex
+  query PizzaQuery($toppingRegex: String) {
+    pizzas: allSanityPizza(filter: {
+      toppings: {
+        elemMatch: {
+          name: {
+            # Using 'in'
+            # in: $topping
+            # Using regex:
+            regex: $toppingRegex
+          }
+        }
+      }
+    }) {
       nodes {
         name
         id
@@ -45,5 +59,6 @@ export const query = graphql`
 
 
 PizzasPage.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.object,
+  pageContext: PropTypes.string
 }
