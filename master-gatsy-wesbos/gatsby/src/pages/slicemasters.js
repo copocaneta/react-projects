@@ -3,6 +3,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Img from 'gatsby-image';
 import styled from 'styled-components';
+import Pagination from '../components/Pagination';
+import SEO from '../components/SEO';
+
+const pageSize = parseInt(process.env.GATSBY_PAGE_SIZE);
+console.log(pageSize);
 
 const SlicemasterGrid = styled.div`
   display: grid;
@@ -37,15 +42,23 @@ const SlicemasterStyled = styled.div`
   }
 `
 
-export default function SlicemasterPage({ data }) {
+export default function SlicemasterPage({ data, pageContext }) {
   const slicemasters = data.slicemasters.nodes;
   console.log(slicemasters);
   return (
     <>
+      <SEO title={`Slicemasters - Page ${pageContext.currentPage || 1}`}/>
+      <Pagination
+        pageSize={pageSize}
+        totalCount={data.slicemasters.totalCount}
+        currentPage={pageContext.currentPage || 1}
+        skip={pageContext.skip}
+        base="/slicemasters"
+      />
       <SlicemasterGrid>
         {slicemasters.map(person => (
           <SlicemasterStyled key={person.slug.current}>
-            <Link to={`/slicermaster/${person.slug.current}`}>
+            <Link to={`/slicemaster/${person.slug.current}`}>
               <h2>
                 <span className="mark">{person.name}</span>
               </h2>
@@ -60,8 +73,8 @@ export default function SlicemasterPage({ data }) {
 }
 
 export const query = graphql`
- query {
-  slicemasters: allSanityPerson {
+ query($skip: Int = 0, $pageSize: Int = 4) {
+  slicemasters: allSanityPerson(limit: $pageSize, skip: $skip) {
     totalCount
     nodes {
       name
@@ -82,5 +95,6 @@ export const query = graphql`
 `
 
 SlicemasterPage.propTypes = {
-  data: PropTypes.object
+  data: PropTypes.object,
+  pageContext: PropTypes.object
 }

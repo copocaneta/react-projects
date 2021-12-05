@@ -1,5 +1,6 @@
-import path from 'path';
+import path, { resolve } from 'path';
 import fetch from 'isomorphic-fetch';
+import { parsePath } from 'gatsby';
 
 async function turnPizzasIntoPages({ graphql, actions }) {
   // 1. Get a template for this page
@@ -67,7 +68,7 @@ async function fetchBeersAndTurnIntoNodes({ actions, createNodeId, createContent
   // 1. Fetch a list of beers
   const res = await fetch('https://api.sampleapis.com/beers/ale');
   const beers = await res.json();
-  console.log(beers);
+  // console.log(beers);
   // 2. Loop over each one
   for (const beer of beers) {
     // I was not getting the beers rating for some reason, then I went to the course's slack
@@ -95,8 +96,53 @@ async function fetchBeersAndTurnIntoNodes({ actions, createNodeId, createContent
     })
 
   }
+}
 
-
+async function turnSliceMastersIntoPages({ graphql, actions }) {
+  // 1. Query all slicemasters
+  const { data } = await graphql(`
+    query {
+      slicemasters: allSanityPerson {
+        totalCount
+        nodes {
+          name
+          id
+          slug {
+            current
+          }
+        }
+      }
+    }
+  `)
+  // TODO: 2. Turn each slicemaster into their own page (TODO)
+  data.slicemasters.nodes.forEach(slicemaster => (
+    actions.createPage({
+      component: path.resolve('./src/templates/Slicemaster.js'),
+      path: `/slicemaster/${slicemaster.slug.current}`,
+      context: {
+        slug: slicemaster.slug.current,
+        name: slicemaster.name,
+      }
+    })
+  ));
+  // 3. Figure out how many pages there are based on how many slicemasters there are and how many per page
+  const pageSize = parseInt(process.env.GATSBY_PAGE_SIZE)
+  const pageCount = Math.ceil(data.slicemasters.totalCount / pageSize);
+  console.log(`There are ${data.slicemasters.totalCount} total people. And we have ${pageCount} pages with ${pageSize} per page.`);
+  // 4. Loop from 1 to n (pages that we have)
+  Array.from({ length: pageCount }).forEach((_, i) => {
+    console.log(`Creating page ${i}`);
+    actions.createPage({
+      path: `/slicemasters/${i+1}`,
+      component: path.resolve('./src/pages/slicemasters.js'),
+      // this data is passed to the template when we create it
+      context: {
+        skip: i * pageSize,
+        currentPage: i + 1,
+        pageSize,
+      },
+    })
+  })
 }
 
 export async function sourceNodes(params) {
@@ -111,7 +157,8 @@ export async function createPages (params) {
   // Wait for all Promises to be resolved before finishing this function
   await Promise.all([
     turnPizzasIntoPages(params),
-    turnToppingsIntoPages(params)
+    turnToppingsIntoPages(params),
+    turnSliceMastersIntoPages(params)
   ])
   // 1. Pizzas
   // 2. Toppings
